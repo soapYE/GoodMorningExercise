@@ -127,10 +127,10 @@ void URIStatiscalHelper::getNormalizedHistogram(int maxBinNum){
     }
     
     //print above x axis
-    for(int i=10; i>0; i--){
+    for(int i=10; i>=0; i--){
         printf("%2.1f %s ",0.1*i, "|");
         for(int j=0;j<binNumber;j++){
-            if(binData[j]>=i*0.1){
+            if(binData[j]>=i*0.1 && binData[j]>0){
                 printf("%s ", "  *  ");
             }
             else{
