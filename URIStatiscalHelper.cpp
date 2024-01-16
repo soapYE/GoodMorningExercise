@@ -50,7 +50,7 @@ double URIStatiscalHelper::getStandardDeviation(){
     }
     catch(const char* message){
         cout << message << endl;
-        return 0;
+        return -1;
     }
 
     double mean = this->getMean();

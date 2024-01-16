@@ -1,5 +1,5 @@
 #include <iostream>
-#include "URIStatiscalHelper.hpp"
+#include "StatiscalRequest.hpp"
 #include <cassert>
 using namespace std;
 
@@ -66,7 +66,7 @@ void testHelperGetDeviationWithNoData(){
     cout << "6 testing helper getStandardDeviation with no data" << endl;
     URIStatiscalHelper helper;
     double result = helper.getStandardDeviation();
-    assert(result == 0);
+    assert(result == -1);
     cout << "#6 clear" << endl;
     cout << endl;
 }
@@ -119,6 +119,108 @@ void testHelperGetNormalizedHistogramNoData(){
     cout << endl;
 }
 
+// #11 testing StatiscalRequest process tasks
+void testRequestProcess(){
+    cout << "#11 testing StatiscalRequest process tasks" << endl;
+    StatiscalRequest r;
+    r.process("uri1");
+    r.process("uri2");
+    r.process("uri2");
+    assert(r.getNumberOfRequest("uri1")==1);
+    assert(r.getNumberOfRequest("uri2")==2);
+    cout << "#11 clear" << endl;
+    cout << endl;
+}
+
+
+// #12 testing StatiscalRequest get mean
+void testRequestGetMean(){
+    cout << "#12 testing StatiscalRequest get mean" << endl;
+    StatiscalRequest r;
+    for(int i=0;i<5;i++){
+        r.process("uri1");
+    }
+    assert(r.getNumberOfRequest("uri1")==5);
+    double mean = r.getMean("uri1");
+    assert(mean>0);
+    cout << "mean is "<< mean << endl;
+    cout << "#12 clear" << endl;
+    cout << endl;
+}
+
+// #13 testing StatiscalRequest get mean with no data
+void testRequestGetMeanNoData(){
+    cout << "#13 testing StatiscalRequest get mean with no data" << endl;
+    StatiscalRequest r;
+    assert(r.getNumberOfRequest("uri1")==0);
+    double mean = r.getMean("uri1");
+    assert(mean==0);
+    cout << "#13 clear" << endl;
+    cout << endl;
+}
+
+// #14 testing StatiscalRequest get standard deviation
+void testRequestGetStandardDeviation(){
+    cout << "#14 testing StatiscalRequest get standard deviation" << endl;
+    StatiscalRequest r;
+    for(int i=0;i<5;i++){
+        r.process("uri1");
+    }
+    assert(r.getNumberOfRequest("uri1")==5);
+    double d = r.getStandardDeviation("uri1");
+    assert(d>=0);
+    cout << "standard deviation is "<< d << endl;
+    cout << "#14 clear" << endl;
+    cout << endl;
+}
+
+// #15 testing StatiscalRequest get standard deviation with no data
+void testRequestGetStandardDeviationNoData(){
+    cout << "#15 testing StatiscalRequest get standard deviation with no data" << endl;
+    StatiscalRequest r;
+    assert(r.getNumberOfRequest("uri1")==0);
+    double d = r.getStandardDeviation("uri1");
+    assert(d==-1);
+    cout << "#15 clear" << endl;
+    cout << endl;
+}
+
+// #16 testing StatiscalRequest get normalized histogram
+void testRequestGetHistogram(){
+    cout << "#16 testing StatiscalRequest get histogram" << endl;
+    StatiscalRequest r;
+    for(int i=0;i<100;i++){
+        r.process("uri1");
+    }
+    assert(r.getNumberOfRequest("uri1")==100);
+    r.getNormalizedHistogram("uri1");
+    cout << "#16 clear" << endl;
+    cout << endl;
+}
+
+// #17 testing StatiscalRequest get histogram with limit bin number
+void testRequestGetHistogramLimitBin(){
+    cout << "#17 testing StatiscalRequest get histogram with 1 bin" << endl;
+    StatiscalRequest r(1);
+    for(int i=0;i<10;i++){
+        r.process("uri1");
+    }
+    assert(r.getNumberOfRequest("uri1")==10);
+    r.getNormalizedHistogram("uri1");
+    cout << "#17 clear" << endl;
+    cout << endl;
+}
+
+// #18 testing StatiscalRequest get histogram with no data
+void testRequestGetHistogramNoData(){
+    cout << "#18 testing StatiscalRequest get histogram with no data" << endl;
+    StatiscalRequest r;
+    assert(r.getNumberOfRequest("uri1")==0);
+    r.getNormalizedHistogram("uri1");
+    cout << "#18 clear" << endl;
+    cout << endl;
+}
+
 int main(){
     testHelperAdd();
     testHelperAddNegative();
@@ -130,4 +232,13 @@ int main(){
     testHelperGetNormalizedHistogramLimitBin();
     testHelperGetNormalizedHistogramInvalidBin();
     testHelperGetNormalizedHistogramNoData();
+
+    testRequestProcess();
+    testRequestGetMean();
+    testRequestGetMeanNoData();
+    testRequestGetStandardDeviation();
+    testRequestGetStandardDeviationNoData();
+    testRequestGetHistogram();
+    testRequestGetHistogramLimitBin();
+    testRequestGetHistogramNoData();
 }
